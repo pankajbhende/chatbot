@@ -11,8 +11,8 @@ function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>('');
   const [language, setLanguage] = useState<string>('en');
-  const [age, setAge] = useState<number>(30);
-  const [salary, setSalary] = useState<number>(50000);
+  const [age, setAge] = useState<number>();
+  const [salary, setSalary] = useState<number>();
   const [minority, setMinority] = useState<boolean>(false);
 
   const {
@@ -71,6 +71,7 @@ function ChatPage() {
     setMessages([]);
     setInput('');
   };
+  
 
   useEffect(() => {
     if (!listening && transcript) {
@@ -86,17 +87,20 @@ function ChatPage() {
         <div className="user-details-form">
   <div className="form-group">
     <label htmlFor="age">Age</label>
-    <input type="number" id="age" name="age" />
+    <input type="number" id="age" name="age" value={age}
+      onChange={(e) => setAge(Number(e.target.value))}/>
   </div>
 
   <div className="form-group">
     <label htmlFor="salary">Salary</label>
-    <input type="number" id="salary" name="salary" />
+    <input type="number" id="salary" name="salary" value={salary}
+      onChange={(e) => setSalary(Number(e.target.value))}/>
   </div>
 
   <div className="form-group">
     <label htmlFor="minority">Minority Category</label>
-    <select id="minority" name="minority">
+    <select id="minority" name="minority" value={minority ? 'yes' : 'no'}
+      onChange={(e) => setMinority(e.target.value === 'yes')}>
       <option value="">Select</option>
       <option value="yes">Yes</option>
       <option value="no">No</option>
