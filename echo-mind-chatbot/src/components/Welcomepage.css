@@ -1,0 +1,70 @@
+/* WelcomePage.css */
+
+.welcome-background {
+  background-color: #bca5d9e0;
+  background-size:1400px;
+  background-repeat: no-repeat;
+  
+  background-attachment: fixed;
+  background-position: center;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.welcome-container {
+  backdrop-filter: blur(10px);
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+  padding: 3rem 4rem;
+  text-align: center;
+  color: #fff;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+  
+}
+
+
+
+
+.glowing-button {
+  margin-top: 2rem;
+  background: linear-gradient(90deg, #6f00ff, #b300ff);
+  color: #fff;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border-radius: 50px;
+  box-shadow: 0 0 20px rgba(179, 0, 255, 0.6);
+  border: none;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+}
+
+.glowing-button:hover {
+  box-shadow: 0 0 30px rgba(179, 0, 255, 0.9);
+}
+
+@media (max-width: 900px) {
+  .chat-options-box,
+  .chat-option-container {
+    max-width: 95vw;
+    padding: 1rem;
+  }
+  .chat-options-buttons {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .chat-option-echo button,
+  .chat-option-voice button {
+    width: 90vw;
+    height: 100px;
+    font-size: large;
+  }
+  .chat-options-topics {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
