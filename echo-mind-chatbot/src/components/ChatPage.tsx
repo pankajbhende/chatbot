@@ -11,6 +11,9 @@ function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>('');
   const [language, setLanguage] = useState<string>('en');
+  const [age, setAge] = useState<number>(30);
+  const [salary, setSalary] = useState<number>(50000);
+  const [minority, setMinority] = useState<boolean>(false);
 
   const {
     transcript,
@@ -19,18 +22,43 @@ function ChatPage() {
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
 
-  const handleSend = () => {
-    if (!input.trim()) return;
-    setMessages([...messages, { role: 'user', text: input }]);
-    setInput('');
-  };
+  const handleSend = async () => {
+  if (!input.trim()) return;
+
+  const userMsg: Message = { role: 'user', text: input };
+  setMessages((prev) => [...prev, userMsg]);
+  setInput('');
+
+  try {
+    const res = await fetch("https://financialinc-1339752296.asia-south1.run.app/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        question: input,
+        age,
+        salary,
+        isMinority: minority,
+      }),
+    });
+
+    const data = await res.json();
+
+    // ✅ Fix is here: Access `data.response`, not `data.message`
+    const assistantMsg: Message = { role: 'assistant', text: data.response };
+
+    setMessages((prev) => [...prev, assistantMsg]);
+  } catch (error) {
+    console.error("API error:", error);
+  }
+};
+
+
 
   const handleVoiceInput = () => {
     if (!browserSupportsSpeechRecognition) {
       alert('Speech recognition is not supported in this browser.');
       return;
     }
-
     resetTranscript();
     SpeechRecognition.startListening({ continuous: false, language });
   };
@@ -53,11 +81,35 @@ function ChatPage() {
   return (
     <div className="chatgpt-container">
       <aside className="sidebar">
-        <div className="sidebar-header">ChatGPT</div>
+        <div className="sidebar-header">EchoMind</div>
+
+        <div className="user-details-form">
+  <div className="form-group">
+    <label htmlFor="age">Age</label>
+    <input type="number" id="age" name="age" />
+  </div>
+
+  <div className="form-group">
+    <label htmlFor="salary">Salary</label>
+    <input type="number" id="salary" name="salary" />
+  </div>
+
+  <div className="form-group">
+    <label htmlFor="minority">Minority Category</label>
+    <select id="minority" name="minority">
+      <option value="">Select</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+  </div>
+</div>
+
+
         <div className="chat-list">
           <div className="chat-item" onClick={handleNewChat}>New Chat</div>
           <div className="chat-item">Interview Help</div>
         </div>
+
         <div className="language-select">
           <label>🌐 Language</label>
           <select value={language} onChange={handleLangChange}>
@@ -74,10 +126,10 @@ function ChatPage() {
       <main className="chat-main">
         <div className="chat-window">
           {messages.map((msg, i) => (
-            <div key={i} className={`message ${msg.role}`}>
-              {msg.text}
-            </div>
-          ))}
+  <div key={i} className={`message ${msg.role}`}>
+    {msg.text}
+  </div>
+))}
         </div>
         <div className="chat-input-area">
           <input
