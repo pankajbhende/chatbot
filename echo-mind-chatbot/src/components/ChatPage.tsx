@@ -14,6 +14,7 @@ function ChatPage() {
   const [age, setAge] = useState<number>();
   const [salary, setSalary] = useState<number>();
   const [minority, setMinority] = useState<boolean>(false);
+  const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
 
   const {
     transcript,
@@ -23,36 +24,31 @@ function ChatPage() {
   } = useSpeechRecognition();
 
   const handleSend = async () => {
-  if (!input.trim()) return;
+    if (!input.trim()) return;
 
-  const userMsg: Message = { role: 'user', text: input };
-  setMessages((prev) => [...prev, userMsg]);
-  setInput('');
+    const userMsg: Message = { role: 'user', text: input };
+    setMessages((prev) => [...prev, userMsg]);
+    setInput('');
 
-  try {
-    const res = await fetch("https://financialinc-1339752296.asia-south1.run.app/ask", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        question: input,
-        age,
-        salary,
-        isMinority: minority,
-      }),
-    });
+    try {
+      const res = await fetch("https://financialinc-1339752296.asia-south1.run.app/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question: input,
+          age,
+          salary,
+          isMinority: minority,
+        }),
+      });
 
-    const data = await res.json();
-
-    // ✅ Fix is here: Access `data.response`, not `data.message`
-    const assistantMsg: Message = { role: 'assistant', text: data.response };
-
-    setMessages((prev) => [...prev, assistantMsg]);
-  } catch (error) {
-    console.error("API error:", error);
-  }
-};
-
-
+      const data = await res.json();
+      const assistantMsg: Message = { role: 'assistant', text: data.response };
+      setMessages((prev) => [...prev, assistantMsg]);
+    } catch (error) {
+      console.error("API error:", error);
+    }
+  };
 
   const handleVoiceInput = () => {
     if (!browserSupportsSpeechRecognition) {
@@ -71,7 +67,21 @@ function ChatPage() {
     setMessages([]);
     setInput('');
   };
-  
+
+  const speakText = (text: string) => {
+    stopSpeech(); // Cancel previous before speaking new
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = language === 'hi' ? 'hi-IN' : 'en-US';
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const stopSpeech = () => {
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+  };
 
   useEffect(() => {
     if (!listening && transcript) {
@@ -82,59 +92,87 @@ function ChatPage() {
   return (
     <div className="chatgpt-container">
       <aside className="sidebar">
-        <div className="sidebar-header">EchoMind</div>
-
-        <div className="user-details-form">
-  <div className="form-group">
-    <label htmlFor="age">Age</label>
-    <input type="number" id="age" name="age" value={age}
-      onChange={(e) => setAge(Number(e.target.value))}/>
-  </div>
-
-  <div className="form-group">
-    <label htmlFor="salary">Salary</label>
-    <input type="number" id="salary" name="salary" value={salary}
-      onChange={(e) => setSalary(Number(e.target.value))}/>
-  </div>
-
-  <div className="form-group">
-    <label htmlFor="minority">Minority Category</label>
-    <select id="minority" name="minority" value={minority ? 'yes' : 'no'}
-      onChange={(e) => setMinority(e.target.value === 'yes')}>
-      <option value="">Select</option>
-      <option value="yes">Yes</option>
-      <option value="no">No</option>
-    </select>
-  </div>
-</div>
-
-
-        <div className="chat-list">
-          <div className="chat-item" onClick={handleNewChat}>New Chat</div>
-          <div className="chat-item">Interview Help</div>
+        <div className="sidebar-header">
+          <img
+            src={require('../images/chatbot.png')}
+            alt="User Icon"
+            className="sidebar-icon"
+          />
+          EchoMind
         </div>
 
-        <div className="language-select">
-          <label>🌐 Language</label>
-          <select value={language} onChange={handleLangChange}>
-            <option value="en">English</option>
-            <option value="hi">Hindi</option>
-            <option value="es">Spanish</option>
-            <option value="fr">French</option>
-            <option value="de">German</option>
-            <option value="ja">Japanese</option>
-          </select>
+        <div className="user-details-form">
+          <div className="form-group">
+            <label htmlFor="age">Age</label>
+            <input
+              type="number"
+              id="age"
+              name="age"
+              value={age}
+              onChange={(e) => setAge(Number(e.target.value))}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="salary">Salary</label>
+            <input
+              type="number"
+              id="salary"
+              name="salary"
+              value={salary}
+              onChange={(e) => setSalary(Number(e.target.value))}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="minority">Minority Category</label>
+            <select
+              id="minority"
+              name="minority"
+              value={minority ? 'yes' : 'no'}
+              onChange={(e) => setMinority(e.target.value === 'yes')}
+            >
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="chat-list">
+          <div className="chat-item" onClick={handleNewChat}>
+            New Chat
+          </div>
         </div>
       </aside>
 
       <main className="chat-main">
-        <div className="chat-window">
-          {messages.map((msg, i) => (
-  <div key={i} className={`message ${msg.role}`}>
-    {msg.text}
-  </div>
-))}
-        </div>
+        {messages.map((msg, i) => (
+          <div key={i} className={`message ${msg.role}`}>
+            {msg.role === 'assistant' && (
+              <>
+                <button
+                  className="tts-button"
+                  onClick={() => speakText(msg.text)}
+                  title="Play message"
+                >
+                  🔊
+                </button>
+                {isSpeaking && (
+                  <button
+                    className="tts-button"
+                    onClick={stopSpeech}
+                    title="Stop speech"
+                  >
+                    ⏹️
+                  </button>
+                )}
+              </>
+            )}
+            {msg.text}
+          </div>
+        ))}
+
         <div className="chat-input-area">
           <input
             type="text"
