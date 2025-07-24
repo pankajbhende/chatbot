@@ -111,10 +111,10 @@ function ChatPage() {
 
         <div className="chat-list">
           <div className="chat-item" onClick={handleNewChat}>New Chat</div>
-          <div className="chat-item">Interview Help</div>
+          
         </div>
 
-        <div className="language-select">
+        {/* <div className="language-select">
           <label>🌐 Language</label>
           <select value={language} onChange={handleLangChange}>
             <option value="en">English</option>
@@ -124,17 +124,17 @@ function ChatPage() {
             <option value="de">German</option>
             <option value="ja">Japanese</option>
           </select>
-        </div>
+        </div> */}
       </aside>
 
       <main className="chat-main">
-        <div className="chat-window">
+        {/* <div className="chat-window"> */}
           {messages.map((msg, i) => (
   <div key={i} className={`message ${msg.role}`}>
     {msg.text}
   </div>
 ))}
-        </div>
+        {/* </div> */}
         <div className="chat-input-area">
           <input
             type="text"
