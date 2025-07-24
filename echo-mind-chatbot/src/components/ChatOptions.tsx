@@ -1,59 +1,56 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import '../components/ChatOptions.css'; 
+import '../components/ChatOptions.css';
+import Dashboard from './Dashboard';
 
-const ChatOptions: React.FC = () => {
+const ChatOptions = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
-  const user = JSON.parse(localStorage.getItem('echoMindUser') || '{}');
-  const topics = ['Financial Goals', 'Real Time Insights'];
-
+  const tabs = [
+    { label: 'Chat with FinBot', path: '/chat/echo' },
+    { label: 'Talk with FinBot', path: '/voice' },
+    { label: 'Financial Tools', path: '/tools' },
+    { label: 'Insights', path: '/insights' }
+  ];
 
   return (
     <div className="chat-options-container">
-      <h2 className="chat-options-greeting">
+      {/* Header */}
+      <header className="chat-options-header">
+        <div className="chat-options-branding">
+          <img
+            src={require('../images/chatbot.png')}
+            alt="FinBot Logo"
+            className="chat-options-logo"
+          />
+          <span className="chat-options-title">FinBot</span>
+        </div>
+      </header>
+
+      {/* Image section */}
+      <div className="chat-options-image-wrapper">
         <img
-          src={require('../images/profile-user.png')}
-          alt="User Icon"
-          className="chat-options-user-icon"
+          src={require('../welcome-bgd.png')}
+          alt="Finance Illustration"
+          className="chat-options-main-image"
         />
-        {' '}
-        Hello, {user.email || 'User'}
-      </h2>
-<div className="chat-options-box">
-      <div className="chat-options-buttons">
-  <div className="chat-option chat-option-echo">
-    <button onClick={() => navigate('/chat/echo')}>
-      {t('chatWith', 'Chat With')}
-    </button>
-  </div>
-  <div className="chat-option chat-option-voice">
-    <button onClick={() => navigate('/voice')}>
-      {t('talkWith', 'Talk With')}
-    </button>
-  </div>
-</div>
-</div>
-<div className="chat-option-container">
-      <div className="chat-options-section">
-        <h1>{t('topics', 'Topics')}</h1>
-       
-        <div className="chat-options-topics">
-  {topics.map((topic) => (
-    <div key={topic} className="chat-options-topic">
-      {topic}
-    </div>
-  ))}
-</div>
       </div>
+
+      {/* Tabs section */}
+      <div className="chat-options-tabs-wrapper">
+        <div className="chat-options-tabs">
+          {tabs.map((tab) => (
+            <div
+              key={tab.path}
+              className="chat-options-tab"
+              onClick={() => navigate(tab.path)}
+            >
+              {tab.label}
+            </div>
+          ))}
+        </div>
       </div>
-      
 
-      <hr className="chat-options-divider" />
-
-      
+      <Dashboard />
     </div>
   );
 };

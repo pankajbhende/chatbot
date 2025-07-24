@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import AppRouter from './router';
 import { BrowserRouter } from 'react-router-dom';
 import './i18n';
+import './index.css'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 
