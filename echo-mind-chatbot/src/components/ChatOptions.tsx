@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../components/ChatOptions.css';
 import Dashboard from './Dashboard';
-import './index.css';
+import '../index.css';
 
 const ChatOptions: React.FC = () => {
   const navigate = useNavigate();
