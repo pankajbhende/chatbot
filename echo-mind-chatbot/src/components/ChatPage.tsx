@@ -13,8 +13,8 @@ function ChatPage() {
   const [language, setLanguage] = useState<string>('en');
   const [age, setAge] = useState<number>();
   const [salary, setSalary] = useState<number>();
-  const [minority, setMinority] = useState<boolean>(false);
-  const [isSpeaking, setIsSpeaking] = useState<boolean>();
+  const [minority, setMinority] = useState<boolean>();
+  const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
   const [showWelcome, setShowWelcome] = useState(true);
 const [fadeWelcome, setFadeWelcome] = useState(false);
 const [loading, setLoading] = useState(false);
