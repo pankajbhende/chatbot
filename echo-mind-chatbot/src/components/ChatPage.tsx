@@ -15,6 +15,10 @@ function ChatPage() {
   const [salary, setSalary] = useState<number>();
   const [minority, setMinority] = useState<boolean>(false);
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
+  const [showWelcome, setShowWelcome] = useState(true);
+const [fadeWelcome, setFadeWelcome] = useState(false);
+const [loading, setLoading] = useState(false);
+
 
   const {
     transcript,
@@ -25,10 +29,16 @@ function ChatPage() {
 
   const handleSend = async () => {
     if (!input.trim()) return;
-
+     if (showWelcome) {
+    setFadeWelcome(true); // start fade
+    setTimeout(() => {
+      setShowWelcome(false); // remove from DOM after fade
+    }, 500); // match the CSS duration
+  }
     const userMsg: Message = { role: 'user', text: input };
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
+    setLoading(true);
 
     try {
       const res = await fetch("https://financialinc-1339752296.asia-south1.run.app/ask", {
@@ -47,6 +57,8 @@ function ChatPage() {
       setMessages((prev) => [...prev, assistantMsg]);
     } catch (error) {
       console.error("API error:", error);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -66,7 +78,17 @@ function ChatPage() {
   const handleNewChat = () => {
     setMessages([]);
     setInput('');
-  };
+  setShowWelcome(true);
+  setFadeWelcome(false); // reset if previously faded
+
+  // Trigger fade out after a short delay
+  setTimeout(() => {
+    setFadeWelcome(true);
+    setTimeout(() => {
+      setShowWelcome(false);
+    }, 500); // match your fade duration
+  }, 100000000000000000); // delay before fade begins (optional)
+};
 
   const speakText = (text: string) => {
     stopSpeech(); // Cancel previous before speaking new
@@ -90,15 +112,23 @@ function ChatPage() {
   }, [transcript, listening]);
 
   return (
+    <div>
+    <header className="chat-options-header">
+        <div className="chat-options-branding">
+          <img
+            src={require('../images/db-logo-1.svg.png')}
+            alt="FinBot Logo"
+            className="chat-options-logo"
+          />
+          <span className="chat-options-title">FinBot</span>
+        </div>
+      </header>
+      
     <div className="chatgpt-container">
+      
       <aside className="sidebar">
         <div className="sidebar-header">
-          <img
-            src={require('../images/chatbot.png')}
-            alt="User Icon"
-            className="sidebar-icon"
-          />
-          EchoMind
+          
         </div>
 
         <div className="user-details-form">
@@ -147,6 +177,12 @@ function ChatPage() {
       </aside>
 
       <main className="chat-main">
+        {showWelcome && (
+  <div className={`message system-message ${fadeWelcome ? 'fade-out' : ''}`}>
+    👋 Welcome to FinBot! Ask me anything about your finances.
+  </div>
+)}
+
         {messages.map((msg, i) => (
           <div key={i} className={`message ${msg.role}`}>
             {msg.role === 'assistant' && (
@@ -169,10 +205,18 @@ function ChatPage() {
                 )}
               </>
             )}
+            
+
             {msg.text}
           </div>
         ))}
-
+{loading && (
+  <div className="message assistant loading-indicator">
+    <span className="dot"></span>
+    <span className="dot"></span>
+    <span className="dot"></span>
+  </div>
+)}
         <div className="chat-input-area">
           <input
             type="text"
@@ -181,9 +225,16 @@ function ChatPage() {
             onChange={(e) => setInput(e.target.value)}
           />
           <button onClick={handleSend}>➤</button>
-          <button onClick={handleVoiceInput}>🎤</button>
+          <button onClick={handleVoiceInput}>
+             <img
+    src={require('../images/bg-welcome.png')}
+    alt="Mic Icon"
+    style={{ width: '20px', height: '20px' }}
+  />
+          </button>
         </div>
       </main>
+    </div>
     </div>
   );
 }

@@ -1,14 +1,15 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../components/ChatOptions.css';
 import Dashboard from './Dashboard';
 
-const ChatOptions = () => {
+const ChatOptions: React.FC = () => {
   const navigate = useNavigate();
 
   const tabs = [
     { label: 'Chat with FinBot', path: '/chat/echo' },
-    { label: 'Talk with FinBot', path: '/voice' },
-    { label: 'Financial Tools', path: '/tools' },
+    // { label: 'Talk with FinBot', path: '/voice' },
+    // { label: 'Financial Tools', path: '/tools' },
     { label: 'Insights', path: '/insights' }
   ];
 
@@ -18,7 +19,7 @@ const ChatOptions = () => {
       <header className="chat-options-header">
         <div className="chat-options-branding">
           <img
-            src={require('../images/chatbot.png')}
+            src={require('../images/db-logo-1.svg.png')}
             alt="FinBot Logo"
             className="chat-options-logo"
           />
@@ -27,12 +28,15 @@ const ChatOptions = () => {
       </header>
 
       {/* Image section */}
+      <div className="chat-options-image-container">
+        <div className="chat-options-image-overlay"></div>
       <div className="chat-options-image-wrapper">
         <img
-          src={require('../welcome-bgd.png')}
+          src={require('../images/welcome-bg.png')}
           alt="Finance Illustration"
           className="chat-options-main-image"
         />
+      </div>
       </div>
 
       {/* Tabs section */}
@@ -44,13 +48,12 @@ const ChatOptions = () => {
               className="chat-options-tab"
               onClick={() => navigate(tab.path)}
             >
-              {tab.label}
+              <span>{tab.label}</span>
             </div>
           ))}
         </div>
       </div>
-
-      <Dashboard />
+      <Dashboard/>
     </div>
   );
 };
