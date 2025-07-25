@@ -144,7 +144,7 @@ const [loading, setLoading] = useState(false);
           </div>
 
           <div className="form-group">
-            <label htmlFor="salary">Salary</label>
+            <label htmlFor="salary">Annual Salary</label>
             <input
               type="number"
               id="salary"
