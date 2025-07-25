@@ -227,7 +227,7 @@ const [loading, setLoading] = useState(false);
           <button onClick={handleSend}>➤</button>
           <button onClick={handleVoiceInput}>
              <img
-    src={require('../images/bg-welcome.png')}
+    src={require('../images/voice.jpg')}
     alt="Mic Icon"
     style={{ width: '20px', height: '20px' }}
   />

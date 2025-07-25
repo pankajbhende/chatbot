@@ -32,7 +32,7 @@ const ChatOptions: React.FC = () => {
         <div className="chat-options-image-overlay"></div>
       <div className="chat-options-image-wrapper">
         <img
-          src={require('../images/welcome-bg.png')}
+          src={require('../images/welcome-crop.jpg')}
           alt="Finance Illustration"
           className="chat-options-main-image"
         />
