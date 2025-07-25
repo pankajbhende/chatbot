@@ -86,7 +86,7 @@ function Dashboard() {
       try {
         for (const symbol of symbols) {
           const response = await fetch(
-            `https://api.finage.co.uk/last/stock/${symbol}?apikey=${API_KEY}`
+            `https://financialinc-1339752296.asia-south1.run.app/api/stock/${symbol}`
           );
           if (!response.ok) {
             throw new Error(`HTTP error ${response.status} for ${symbol}`);
